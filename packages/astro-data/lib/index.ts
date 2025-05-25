@@ -1,13 +1,3 @@
-export function getLifePathNumber(birth: string) {
-  // birth = "YYYY-MM-DD"
-  const digits = birth.replaceAll('-', '').split('').map(Number);
-  let sum = digits.reduce((a, b) => a + b, 0);
-  while (sum > 9 && ![11, 22, 33].includes(sum)) {
-    sum = String(sum).split('').reduce((a, b) => a + +b, 0);
-  }
-  return sum;
-}
-
 export function getZodiacSign(birth: string): string {
   const [, monthStr, dayStr] = birth.split('-');
   const month = Number(monthStr);
@@ -26,4 +16,14 @@ export function getZodiacSign(birth: string): string {
   if (value >= 1023 && value <= 1121) return 'Scorpio';
   if (value >= 1122 && value <= 1221) return 'Sagittarius';
   return 'Capricorn';
+}
+
+export function getLifePathNumber(birth: string) {
+  // birth = "YYYY-MM-DD"
+  const digits = birth.replaceAll('-', '').split('').map(Number);
+  let sum = digits.reduce((a, b) => a + b, 0);
+  while (sum > 9 && ![11, 22, 33].includes(sum)) {
+    sum = String(sum).split('').reduce((a, b) => a + +b, 0);
+  }
+  return sum;
 }
