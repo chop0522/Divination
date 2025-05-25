@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getLifePathNumber } from '@divination/astro-data/lib'
+import { getLifePathNumber } from '@divination/astro-data'
 
 export function GET(req: Request) {
   const { searchParams } = new URL(req.url)
