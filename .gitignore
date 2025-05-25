@@ -1,1 +1,4 @@
 .venv/
+.env.local
+pnpm-lock.yaml
+node_modules/
