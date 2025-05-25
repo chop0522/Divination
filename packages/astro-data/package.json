@@ -1,6 +1,6 @@
 {
   "name": "@divination/astro-data",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "lib/index.ts",
-  "type": "module"
+  "types": "lib/index.ts"
 }
