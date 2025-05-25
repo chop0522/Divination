@@ -9,25 +9,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v2
         with:
           version: 9
+
       - uses: actions/setup-node@v4
         with:
           cache: 'pnpm'
           node-version: 20
+
       - run: pnpm install --frozen-lockfile
-      - name: Build & Export
-        run: |
-          pnpm -F web build
-          pnpm -F web next export
+
+      - name: Build
+        run: pnpm -F web build
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
       - name: Publish
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           projectName: divination
-          directory: web/out
+          directory: .vercel/output/static
