@@ -27,6 +27,9 @@
       ],
       "@divination/astro-data/*": [
         "../packages/astro-data/lib/*"
+      ],
+      "@/*": [
+        "src/*"
       ]
     },
     "incremental": true,
