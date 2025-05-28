@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import TarotDrawer from './components/TarotDrawer'
 
 export default function Home() {
   const [date, setDate] = useState('')
   const [sign, setSign] = useState('')
   const [path, setPath] = useState<number>()
+  const [open, setOpen] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,6 +33,13 @@ export default function Home() {
       </form>
       {sign && <p className="mt-4">星座: {sign}</p>}
       {path !== undefined && <p>ライフパス: {path}</p>}
+      <button
+        onClick={() => setOpen(true)}
+        className="mt-8 px-4 py-2 bg-purple-500 text-white rounded"
+      >
+        タロットを引く
+      </button>
+      <TarotDrawer open={open} onClose={() => setOpen(false)} />
     </main>
   )
 }
