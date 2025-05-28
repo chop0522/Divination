@@ -30,6 +30,9 @@ importers:
       swr:
         specifier: ^2.3.3
         version: 2.3.3(react@18.2.0)
+      zod:
+        specifier: ^3.25.32
+        version: 3.25.32
     devDependencies:
       '@cloudflare/next-on-pages':
         specifier: ^1.13.12
@@ -3176,6 +3179,9 @@ packages:
 
   zod@3.22.3:
     resolution: {integrity: sha512-EjIevzuJRiRPbVH4mGc8nApb/lVLKVpmUhAaR5R5doKGfAnGJ6Gr3CViAVjP+4FWSxCsybeWQdcgCtbX+7oZug==}
+
+  zod@3.25.32:
+    resolution: {integrity: sha512-OSm2xTIRfW8CV5/QKgngwmQW/8aPfGdaQFlrGoErlgg/Epm7cjb6K6VEyExfe65a3VybUOnu381edLb0dfJl0g==}
 
 snapshots:
 
@@ -6451,3 +6457,5 @@ snapshots:
       stacktracey: 2.1.8
 
   zod@3.22.3: {}
+
+  zod@3.25.32: {}
