@@ -1,8 +1,10 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import useSWR from 'swr'
 import { z } from 'zod'
+import TarotCard from './TarotCard'
 import { useLangStore } from '@/store/useLangStore'
 
 const TarotSchema = z.object({
@@ -14,10 +16,13 @@ const TarotSchema = z.object({
 
 export type Tarot = z.infer<typeof TarotSchema>
 
-const fetcher = async (url: string): Promise<Tarot[]> => {
+type Drawn = Tarot & { reversed: boolean }
+
+const fetcher = async (url: string): Promise<Tarot | Tarot[]> => {
   const res = await fetch(url)
   const data = await res.json()
-  return z.array(TarotSchema).parse(data)
+  if (Array.isArray(data)) return z.array(TarotSchema).parse(data)
+  return TarotSchema.parse(data)
 }
 
 interface Props {
@@ -27,7 +32,29 @@ interface Props {
 
 export default function TarotDrawer({ open, onClose }: Props) {
   const { lang, toggle } = useLangStore()
-  const { data } = useSWR(open ? '/api/tarot?cards=3' : null, fetcher)
+  const [count, setCount] = useState(1)
+  const { data } = useSWR(open ? `/api/tarot?cards=${count}` : null, fetcher)
+  const [cards, setCards] = useState<Drawn[]>([])
+
+  useEffect(() => {
+    if (!data) {
+      setCards([])
+      return
+    }
+    const arr = (Array.isArray(data) ? data : [data]).map(c => ({
+      ...c,
+      reversed: Math.random() < 0.5,
+    }))
+    setCards(arr)
+  }, [data])
+
+  const toggleReversed = (i: number) => {
+    setCards(cs => {
+      const next = [...cs]
+      next[i] = { ...next[i], reversed: !next[i].reversed }
+      return next
+    })
+  }
 
   return (
     <div
@@ -46,25 +73,52 @@ export default function TarotDrawer({ open, onClose }: Props) {
         {lang === 'en' ? 'JA' : 'EN'}
       </button>
       <div className="mt-8 p-4 space-y-4">
-        {data ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center space-x-4">
-            {data.map(card => (
-              <div key={card.id} className="text-center">
-                <img
-                  src={`/tarot/${card.id}.svg`}
-                  alt={card.name}
-                  className="w-24 h-auto mx-auto"
+        <div className="flex justify-center gap-4">
+          <label className="flex items-center gap-1 text-sm">
+            <input
+              type="radio"
+              name="draw-count"
+              checked={count === 1}
+              onChange={() => setCount(1)}
+            />
+            1枚
+          </label>
+          <label className="flex items-center gap-1 text-sm">
+            <input
+              type="radio"
+              name="draw-count"
+              checked={count === 3}
+              onChange={() => setCount(3)}
+            />
+            3枚
+          </label>
+        </div>
+        {cards.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col md:flex-row items-center justify-center gap-4"
+          >
+            {cards.map((card, i) => (
+              <div
+                key={`${card.id}-${i}`}
+                onClick={() => toggleReversed(i)}
+                className="cursor-pointer"
+              >
+                <TarotCard
+                  image={`/tarot/${card.id}.svg`}
+                  nameEn={card.name}
+                  nameJa={card.name}
+                  meaningEn={card.meaning}
+                  meaningJa={card.meaning_ja}
+                  reversed={card.reversed}
                 />
-                <h2 className="mt-2 text-sm font-bold">{card.name}</h2>
-                <p className="mt-1 text-xs text-gray-700">
-                  {lang === 'en' ? card.meaning : card.meaning_ja}
-                </p>
               </div>
             ))}
           </motion.div>
         ) : (
-          <div className="flex justify-center space-x-4">
-            {[0, 1, 2].map(i => (
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+            {Array.from({ length: count }).map((_, i) => (
               <img
                 key={i}
                 src="/tarot/back.svg"
