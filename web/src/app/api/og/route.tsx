@@ -1,3 +1,4 @@
+/** @jsxRuntime automatic */
 import { ImageResponse } from '@vercel/og'
 import tarot from '@/lib/tarotData'
 
