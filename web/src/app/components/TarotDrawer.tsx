@@ -56,23 +56,25 @@ export default function TarotDrawer({ open, onClose }: Props) {
     })
   }
 
+  if (!open) return null
+
   return (
-    <div
-      className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform transition-transform ${open ? 'translate-x-0' : 'translate-x-full'}`}
-    >
-      <button
-        onClick={onClose}
-        className="absolute top-2 right-2 text-gray-500"
-      >
-        ×
-      </button>
-      <button
-        onClick={toggle}
-        className="absolute top-2 left-2 text-gray-500"
-      >
-        {lang === 'en' ? 'JA' : 'EN'}
-      </button>
-      <div className="mt-8 p-4 space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative bg-white rounded-lg p-4">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-500"
+        >
+          ×
+        </button>
+        <button
+          onClick={toggle}
+          className="absolute top-2 left-2 text-gray-500"
+        >
+          {lang === 'en' ? 'JA' : 'EN'}
+        </button>
+        <div className="mt-8 space-y-4">
         <div className="flex justify-center gap-4">
           <label className="flex items-center gap-1 text-sm">
             <input
@@ -130,5 +132,6 @@ export default function TarotDrawer({ open, onClose }: Props) {
         )}
       </div>
     </div>
+  </div>
   )
 }
