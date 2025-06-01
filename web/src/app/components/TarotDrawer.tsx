@@ -106,7 +106,7 @@ export default function TarotDrawer({ open, onClose }: Props) {
                 className="cursor-pointer"
               >
                 <TarotCard
-                  image={`/tarot/${card.id}.svg`}
+                  image={`/tarot/${card.id}.png`}
                   nameEn={card.name}
                   nameJa={card.name}
                   meaningEn={card.meaning}
@@ -121,7 +121,7 @@ export default function TarotDrawer({ open, onClose }: Props) {
             {Array.from({ length: count }).map((_, i) => (
               <img
                 key={i}
-                src="/tarot/back.svg"
+                src="/tarot/back.png"
                 alt="back"
                 className="w-24 h-auto"
               />
