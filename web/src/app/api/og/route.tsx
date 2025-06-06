@@ -1,6 +1,6 @@
 /** @jsxRuntime automatic */
 import { ImageResponse } from '@vercel/og'
-import tarot from '@/lib/tarotData'
+import tarot, { TarotCard } from '@/lib/tarotData'
 
 export const runtime = 'edge'
 
@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     .filter(n => !Number.isNaN(n))
     .slice(0, 3)
 
-  const cards = ids.length
+  const cards: TarotCard[] = ids.length
     ? ids.map(id => tarot[id])
     : [tarot[Math.floor(Math.random() * tarot.length)]]
 
