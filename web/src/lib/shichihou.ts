@@ -38,7 +38,8 @@ function getGemType(num: number): string {
 
 export function calcShichihou(birth: string): Shichihou {
   const [yearStr, monthStr, dayStr] = birth.split('-')
-  const digits = [...yearStr, ...monthStr, ...dayStr]
+  const digits = (yearStr + monthStr + dayStr)
+    .split('')
     .map((c) => Number(c))
     .filter((n) => !isNaN(n))
   const sum = digits.reduce((a, b) => a + b, 0)
