@@ -6,7 +6,10 @@ export const runtime = 'edge'
 
 export async function GET(req: Request) {
   const url = new URL(req.url)
-  const birth = url.searchParams.get('birth') ?? ''
+  const birth = url.searchParams.get('birth')
+  if (!birth) {
+    return NextResponse.json({ error: 'Missing birth' }, { status: 400 })
+  }
   const dateStr = url.searchParams.get('date') ?? undefined
   const base = dateStr ? new Date(dateStr) : new Date()
   const result = calcShichihou(birth, base)

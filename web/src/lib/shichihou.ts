@@ -1,11 +1,13 @@
 export interface Shichihou {
-  star: string
-  yearCycle: number
-  monthCycle: number
-  description: string
+  star: string          // 例: "ダイヤモンド（火）"
+  yearCycle: number     // 1-7, based on birthday-anchored 7-year cycle
+  monthCycle: number    // 1-12, within the current yearCycle
+  description: string   // star × yearCycle の解説文
 }
 
-const STAR_TEXT: Record<string, string[]> = {
+// 各宝石タイプ×7年周期の解説文
+// 後で正式な文章に置き換えるため、すべて "TODO: " を接頭辞にしてある
+export const STAR_DESCRIPTIONS: Record<string, string[]> = {
   'ダイヤモンド（火）': [
     'TODO: ダイヤモンド 年1',
     'TODO: ダイヤモンド 年2',
@@ -75,24 +77,40 @@ export function calcShichihou(birth: string, date: Date = new Date()): Shichihou
   if (gemNum > 7) gemNum = ((gemNum - 1) % 7) + 1
   const star = getGemType(gemNum)
 
-  const birthYear = Number(yearStr)
-  const birthMonth = Number(monthStr)
-  const birthDay = Number(dayStr)
+  const birthDate = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr))
 
-  let age = date.getFullYear() - birthYear
+  const adjustForRisshun = (d: Date): Date => {
+    const risshunDay = getRisshunDay(d.getFullYear())
+    const risshun = new Date(d.getFullYear(), 1, risshunDay)
+    if (d < risshun) {
+      return new Date(d.getFullYear() - 1, d.getMonth(), d.getDate())
+    }
+    return d
+  }
+
+  const adjBirth = adjustForRisshun(birthDate)
+  const adjDate = adjustForRisshun(new Date(date))
+
+  let age = adjDate.getFullYear() - adjBirth.getFullYear()
   if (
-    date.getMonth() + 1 < birthMonth ||
-    (date.getMonth() + 1 === birthMonth && date.getDate() < birthDay)
+    adjDate.getMonth() < adjBirth.getMonth() ||
+    (adjDate.getMonth() === adjBirth.getMonth() && adjDate.getDate() < adjBirth.getDate())
   ) {
     age -= 1
   }
   const yearCycle = ((age % 7) + 7) % 7 + 1
 
-  let months = age * 12 + (date.getMonth() + 1 - birthMonth)
-  if (date.getDate() < birthDay) months -= 1
-  const monthCycle = ((months % 7) + 7) % 7 + 1
+  let months = age * 12 + (adjDate.getMonth() - adjBirth.getMonth())
+  if (adjDate.getDate() < adjBirth.getDate()) months -= 1
+  const monthCycle = ((months % 12) + 12) % 12 + 1
 
-  const description = STAR_TEXT[star]?.[yearCycle - 1] ?? ''
+  const description = STAR_DESCRIPTIONS[star]?.[yearCycle - 1] ?? ''
 
   return { star, yearCycle, monthCycle, description }
+}
+
+function getRisshunDay(year: number): number {
+  // 立春が2月3日になる年はごく一部のみ
+  const feb3 = new Set([2021, 2025])
+  return feb3.has(year) ? 3 : 4
 }
