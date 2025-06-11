@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import TarotDrawer from './components/TarotDrawer'
+import SevenTreasureCard from './components/SevenTreasureCard'
 
 export default function Home() {
   const [date, setDate] = useState('')
@@ -16,6 +17,11 @@ export default function Home() {
     setSign(zodiac.sign)
     const numerology = await fetch(`/api/numerology?date=${date}`).then(r => r.json())
     setPath(numerology.path)
+    await fetch('/api/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ birth: date }),
+    })
   }
 
   return (
@@ -33,6 +39,7 @@ export default function Home() {
       </form>
       {sign && <p className="mt-4">星座: {sign}</p>}
       {path !== undefined && <p>ライフパス: {path}</p>}
+      <SevenTreasureCard />
       <button
         onClick={() => setOpen(true)}
         className="mt-8 px-4 py-2 bg-purple-500 text-white rounded"
